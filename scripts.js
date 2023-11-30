@@ -187,6 +187,17 @@ function loadVideos() {
                             // Create a card element
                             let cardCol = $('<div>').addClass('col-12 col-sm-6 col-md-6 col-lg-3 d-flex justify-content-center justify-content-md-end justify-content-lg-center');
 
+                            // create star rating element
+                            let stars = '';
+                            for (let i = 0; i < 5; i++) {
+                                if (i < video.star) {
+                                    stars += '<img src="images/star_on.png" alt="Star On" width="15px" />';
+                                } else {
+                                    stars += '<img src="images/star_off.png" alt="Star Off" width="15px" />';
+                                }
+                            }
+
+                            // create card html
                             let cardHtml = `
                                 <div class="card">
                                     <img src="${video.thumb_url}" class="card-img-top" alt="Video thumbnail" />
@@ -201,8 +212,7 @@ function loadVideos() {
                                             <h6 class="pl-3 m-0 main-color">${video.author}</h6>
                                         </div>
                                         <div class="info pt-3 d-flex justify-content-between">
-                                            <div class="rating">
-                                                <!-- Add star rating here -->
+                                            <div class="rating">${video.star > 0 ? stars : ''}
                                             </div>
                                             <span class="main-color">${video.duration}</span>
                                         </div>
@@ -218,7 +228,8 @@ function loadVideos() {
 
                             // Append the card column element to the row
                             cardRow.append(cardCol);
-                        }
+
+                            }
                     }
 
                     // Append the row to the carousel item
