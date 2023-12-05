@@ -3,9 +3,10 @@
 $(document).ready(function() {
     /** Carousel QUOTES loader*/
     loadQuotes('https://smileschool-api.hbtn.info/quotes', '#carouselExampleControls');
-    /** Carousel Video Loader */
+    /** Carousel Popular Video Loader */
     loadVideos('https://smileschool-api.hbtn.info/popular-tutorials', '#carouselExampleControls2');
-
+    /** Carousel Latest Video Loader */
+    loadVideos('https://smileschool-api.hbtn.info/latest-videos', '#carouselExampleControls3');
 });
 
 /** Create Quote cards */
@@ -119,7 +120,7 @@ function getItemsPerSlide() {
 /** Carousel Video Loader */
 
 function loadVideos(url, idSelector) {
-    const carouselInner = $(idSelector + ' .carousel-inner .loadItems2');
+    const carouselInner = $(idSelector + ' .carousel-inner .loadItems');
     $('.loader2').show();
 
     $.ajax({
@@ -144,7 +145,7 @@ function loadVideos(url, idSelector) {
                 }
             });
         },
-        error: function(error) {
+         error: function(error) {
             $('.loader2').hide();
             console.error('Error:', error);
         }
