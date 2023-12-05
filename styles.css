@@ -1082,3 +1082,19 @@
 .holberton_school-icon-star:before {
   content: "\e914";
 }
+
+
+/* ============================================================== After JS ============================================================== */
+
+.carousel-item {
+    width: 100%; /* Set a fixed width for each carousel item */
+    transition: transform 0.5s ease-in-out; /* Add a smooth transition */
+}
+
+.carousel-inner {
+    overflow: hidden; /* Hide content that overflows the container */
+}
+
+.carousel-item:not(.active) {
+    display: none; /* Hide non-active items */
+}

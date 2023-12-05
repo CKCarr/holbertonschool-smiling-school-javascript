@@ -2,9 +2,9 @@
 
 $(document).ready(function() {
     /** Carousel QUOTES loader*/
-    loadQuotes();
+    loadQuotes('https://smileschool-api.hbtn.info/quotes', '#carouselExampleControls');
     /** Carousel Video Loader */
-    loadVideos();
+    loadVideos('https://smileschool-api.hbtn.info/popular-tutorials', '#carouselExampleControls2');
 
 });
 
@@ -30,12 +30,12 @@ function createQuoteCard(quote, isActive) {
 
 /** Carousel QUOTES Loader */
 
-function loadQuotes() {
-    const carouselInner = $('#carouselExampleControls .carousel-inner .loadItems');
+function loadQuotes(url, idSelector) {
+    const carouselInner = $(idSelector + ' .carousel-inner .loadItems');
     $('.loader').show();
 
     $.ajax({
-        url: 'https://smileschool-api.hbtn.info/quotes',
+        url: url,
         type: 'GET',
         dataType: 'json',
         success: function(quotes) {
@@ -118,12 +118,12 @@ function getItemsPerSlide() {
 
 /** Carousel Video Loader */
 
-function loadVideos() {
-    const carouselInner = $('#carouselExampleControls2 .carousel-inner .loadItems2');
+function loadVideos(url, idSelector) {
+    const carouselInner = $(idSelector + ' .carousel-inner .loadItems2');
     $('.loader2').show();
 
     $.ajax({
-        url: 'https://smileschool-api.hbtn.info/popular-tutorials',
+        url: url,
         type: 'GET',
         dataType: 'json',
         success: function(videos) {
@@ -131,10 +131,10 @@ function loadVideos() {
             carouselInner.empty();
 
             $.each(videos, function(index, video) {
-                const carouselItem = createVideoCard(video);
-                let itemsPerSlide = getItemsPerSlide();
-                carouselInner.append(carouselItem);
+                const videoCard = createVideoCard(video);
+                carouselInner.append(videoCard);
 
+                let itemsPerSlide = getItemsPerSlide();
                 if ((index % itemsPerSlide) === 0) {
                     const carouselItem = $('<div>').addClass('carousel-item');
                     carouselInner.append(carouselItem);
@@ -142,8 +142,6 @@ function loadVideos() {
                         carouselItem.addClass('active');
                     }
                 }
-
-                carouselItem.append(carouselItem);
             });
         },
         error: function(error) {
