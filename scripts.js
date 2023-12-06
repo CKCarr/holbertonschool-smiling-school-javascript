@@ -3,10 +3,17 @@
 $(document).ready(function() {
     /** Carousel QUOTES loader*/
     loadQuotes('https://smileschool-api.hbtn.info/quotes', '#carouselExampleControls');
+
     /** Carousel Popular Video Loader */
     loadVideos('https://smileschool-api.hbtn.info/popular-tutorials', '#carouselExampleControls2');
+
     /** Carousel Latest Video Loader */
     loadVideos('https://smileschool-api.hbtn.info/latest-videos', '#carouselExampleControls3');
+
+    /** Search Video Loader */
+    searchLoadVideoCards('https://smileschool-api.hbtn.info/courses');
+    // Listen for changes in search parameters and update video cards
+    $('#searchInput, #topicDropdown, #sortByDropdown').on('change', loadVideoCards);
 });
 
 /** Create Quote cards */
@@ -121,14 +128,14 @@ function getItemsPerSlide() {
 
 function loadVideos(url, idSelector) {
     const carouselInner = $(idSelector + ' .carousel-inner .loadItems');
-    $('.loader2').show();
+    $('.loader').show();
 
     $.ajax({
         url: url,
         type: 'GET',
         dataType: 'json',
         success: function(videos) {
-            $('.loader2').hide();
+            $('.loader').hide();
             carouselInner.empty();
 
             $.each(videos, function(index, video) {
@@ -139,14 +146,88 @@ function loadVideos(url, idSelector) {
                 if ((index % itemsPerSlide) === 0) {
                     const carouselItem = $('<div>').addClass('carousel-item');
                     carouselInner.append(carouselItem);
-                    if (index === 0) {
+                    if (carouselInner.children().length < itemsPerSlide || index === 0) {
                         carouselItem.addClass('active');
                     }
                 }
             });
         },
-         error: function(error) {
-            $('.loader2').hide();
+        error: function(error) {
+            $('.loader').hide();
+            console.error('Error:', error);
+        }
+    });
+}
+
+// Function to populate Topic dropdown with dynamic options
+function populateTopicDropdown(data) {
+    const topicDropdown = $('#topicDropdown');
+    topicDropdown.empty(); // Clear existing options
+
+    // Add dynamic options based on data
+    data.topics.forEach(function (topic) {
+        topicDropdown.append($('<option>', {
+            value: topic,
+            text: topic,
+        }));
+    });
+}
+
+// Function to populate Sort By dropdown with dynamic options
+function populateSortByDropdown(data) {
+    const sortByDropdown = $('#sortByDropdown');
+    sortByDropdown.empty(); // Clear existing options
+
+    // Add dynamic options based on data
+    data.sorts.forEach(function (sort) {
+        sortByDropdown.append($('<option>', {
+            value: sort,
+            text: sort,
+        }));
+    });
+}
+
+// Function to load video cards based on search parameters
+function searchLoadVideoCards(url) {
+    const searchInput = $('#searchInput').val();
+    const selectedTopic = $('#topicDropdown').val();
+    const selectedSortBy = $('#sortByDropdown').val();
+    const videoCardsContainer = $('#videoCardsContainer');
+    const loader = $('.loader');
+
+    // Show loader while fetching data
+    loader.show();
+    videoCardsContainer.empty(); // Clear existing video cards
+
+    // Make an AJAX request to the API
+    $.ajax({
+        url: url,
+        type: 'GET',
+        data: {
+            q: searchInput,
+            topic: selectedTopic,
+            sort: selectedSortBy,
+        },
+        dataType: 'json',
+        success: function (data) {
+            // Hide loader after data is fetched
+            loader.hide();
+
+            // Populate the Topic and Sort By dropdowns
+            populateTopicDropdown(data);
+            populateSortByDropdown(data);
+
+            // Add dynamic video cards based on the API response
+            data.courses.forEach(function (course) {
+                // Create and append video card elements here
+                // You can use the createVideoCard function you've shown earlier
+                const videoCard = createVideoCard(course);
+                videoCardsContainer.append(videoCard);
+            });
+        },
+        error: function (error) {
+            // Hide loader and handle errors
+            loader.hide();
             console.error('Error:', error);
         }
     });
