@@ -12,8 +12,9 @@ $(document).ready(function() {
 
     /** Search Video Loader */
     searchLoadVideoCards('https://smileschool-api.hbtn.info/courses');
-    // Listen for changes in search parameters and update video cards
-    $('#searchInput, #topicDropdown, #sortByDropdown').on('change', loadVideoCards);
+
+// Listen for changes in search parameters and update video cards
+$('#searchInput, #topicDropdown, #sortByDropdown').on('change', handleDropdownChanges);
 });
 
 /** Create Quote cards */
@@ -220,7 +221,6 @@ function searchLoadVideoCards(url) {
             // Add dynamic video cards based on the API response
             data.courses.forEach(function (course) {
                 // Create and append video card elements here
-                // You can use the createVideoCard function you've shown earlier
                 const videoCard = createVideoCard(course);
                 videoCardsContainer.append(videoCard);
             });
@@ -232,3 +232,14 @@ function searchLoadVideoCards(url) {
         }
     });
 }
+
+// Function to handle changes in search input, topic, and sort by dropdowns
+function handleDropdownChanges() {
+    // Delay the API request by a short time to prevent rapid firing
+    clearTimeout(this.delay);
+    this.delay = setTimeout(function () {
+        searchLoadVideoCards('https://smileschool-api.hbtn.info/courses');
+    }, 300);
+
+}
+
